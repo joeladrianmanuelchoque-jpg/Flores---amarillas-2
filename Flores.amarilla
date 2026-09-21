@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Feliz Día de las Flores Amarillas 🌻</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family:Arial,sans-serif;
+    touch-action:none;
+}
+
+#scene{
+    position:fixed;
+    inset:0;
+}
+
+canvas{
+    display:block;
+    width:100%;
+    height:100%;
+}
+
+#start{
+    position:fixed;
+    inset:0;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    background:radial-gradient(
+        circle,
+        rgba(255,210,0,.15),
+        #000 65%
+    );
+    color:white;
+    cursor:pointer;
+    transition:opacity .8s;
+}
+
+#start .flower{
+    font-size:90px;
+    filter:
+        drop-shadow(0 0 12px #ffd000)
+        drop-shadow(0 0 40px #ffae00);
+    animation:pulse 1.5s infinite;
+}
+
+#start p{
+    margin-top:20px;
+    font-size:20px;
+    letter-spacing:2px;
+    text-shadow:0 0 15px #ffd000;
+}
+
+#hint{
+    position:fixed;
+    bottom:18px;
+    left:50%;
+    transform:translateX(-50%);
+    color:rgba(255,225,100,.7);
+    font-size:12px;
+    z-index:5;
+    pointer-events:none;
+}
+
+@keyframes pulse{
+    50%{transform:scale(1.13)}
+}
+</style>
+</head>
+
+<body>
+
+<div id="scene"></div>
+
+<div id="start">
+    <div class="flower">🌻</div>
+    <p>Toca para iniciar</p>
+</div>
+
+<div id="hint">
+    Arrastra para mirar · Pellizca para acercar
+</div>
+
+<script type="importmap">
+{
+    "imports":{
+        "three":
+        "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"
+    }
+}
+</script>
+
+<script type="module">
+
+import * as THREE from "three";
+
+import {
+    OrbitControls
+} from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js";
+
+
+/* =====================================================
+   ESCENA
+===================================================== */
+
+const scene = new THREE.Scene();
+
+scene.background =
+    new THREE.Color(0x000000);
+
+scene.fog =
+    new THREE.FogExp2(
+        0x000000,
+        .00028
+    );
+
+
+/* =====================================================
+   CÁMARA
+===================================================== */
+
+const camera =
+    new THREE.PerspectiveCamera(
+        65,
+        innerWidth/innerHeight,
+        1,
+        6000
+    );
+
+camera.position.set(
+    0,
+    120,
+    1050
+);
+
+
+/* =====================================================
+   RENDER
+===================================================== */
+
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias:true,
+        powerPreference:"high-performance"
+    });
+
+renderer.setPixelRatio(
+    Math.min(devicePixelRatio,1.8)
+);
+
+renderer.setSize(
+    innerWidth,
+    innerHeight
+);
+
+renderer.outputColorSpace =
+    THREE.SRGBColorSpace;
+
+document
+    .getElementById("scene")
+    .appendChild(renderer.domElement);
+
+
+/* =====================================================
+   CONTROLES
+===================================================== */
+
+const controls =
+    new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+controls.target.set(0,0,0);
+
+controls.enableDamping=false;
+
+controls.enablePan=false;
+
+controls.rotateSpeed=1.7;
+
+controls.zoomSpeed=1.4;
+
+controls.minDistance=320;
+
+controls.maxDistance=2000;
+
+controls.autoRotate=true;
+
+controls.autoRotateSpeed=.55;
+
+
+/* =====================================================
+   LUCES DEL PLANETA
+===================================================== */
+
+scene.add(
+    new THREE.AmbientLight(
+        0xffd83d,
+        .8
+    )
+);
+
+const centralLight =
+    new THREE.PointLight(
+        0xffc400,
+        15,
+        1800
+    );
+
+centralLight.position.set(
+    0,
+    0,
+    100
+);
+
+scene.add(centralLight);
+
+const light2 =
+    new THREE.PointLight(
+        0xffffaa,
+        8,
+        1000
+    );
+
+light2.position.set(
+    -250,
+    300,
+    250
+);
+
+scene.add(light2);
+
+
+/* =====================================================
+   TEXTURA DE GLOW
+===================================================== */
+
+function makeGlow(){
+
+    const c =
+        document.createElement("canvas");
+
+    c.width=256;
+    c.height=256;
+
+    const ctx=c.getContext("2d");
+
+    const g =
+        ctx.createRadialGradient(
+            128,128,0,
+            128,128,128
+        );
+
+    g.addColorStop(
+        0,
+        "rgba(255,255,180,1)"
+    );
+
+    g.addColorStop(
+        .15,
+        "rgba(255,235,70,.9)"
+    );
+
+    g.addColorStop(
+        .38,
+        "rgba(255,190,0,.5)"
+    );
+
+    g.addColorStop(
+        .7,
+        "rgba(255,150,0,.16)"
+    );
+
+    g.addColorStop(
+        1,
+        "rgba(255,120,0,0)"
+    );
+
+    ctx.fillStyle=g;
+
+    ctx.fillRect(
+        0,0,256,256
+    );
+
+    return new THREE.CanvasTexture(c);
+}
+
+const glowTex=makeGlow();
+
+
+/* =====================================================
+   PLANETA
+===================================================== */
+
+const planetGroup =
+    new THREE.Group();
+
+scene.add(planetGroup);
+
+
+/* esfera */
+
+const planetGeometry =
+    new THREE.SphereGeometry(
+        145,
+        64,
+        64
+    );
+
+const planetMaterial =
+    new THREE.MeshStandardMaterial({
+        color:0xffd21f,
+        emissive:0xffa900,
+        emissiveIntensity:.75,
+        roughness:.45,
+        metalness:.08
+    });
+
+const planet =
+    new THREE.Mesh(
+        planetGeometry,
+        planetMaterial
+    );
+
+planetGroup.add(planet);
+
+
+/* =====================================================
+   GLOW GRANDE
+===================================================== */
+
+for(let i=0;i<4;i++){
+
+    const glow =
+        new THREE.Sprite(
+            new THREE.SpriteMaterial({
+                map:glowTex,
+                color:
+                    i===0
+                    ?0xffff70
+                    :0xffc400,
+                transparent:true,
+                opacity:
+                    .32-i*.055,
+                blending:
+                    THREE.AdditiveBlending,
+                depthWrite:false
+            })
+        );
+
+    const size =
+        500+i*100;
+
+    glow.scale.set(
+        size,
+        size,
+        1
+    );
+
+    planetGroup.add(glow);
+}
+
+
+/* =====================================================
+   ANILLO PRINCIPAL
+===================================================== */
+
+const ringGeometry =
+    new THREE.TorusGeometry(
+        220,
+        8,
+        20,
+        180
+    );
+
+const ringMaterial =
+    new THREE.MeshBasicMaterial({
+        color:0xffff35,
+        transparent:true,
+        opacity:1,
+        blending:
+            THREE.AdditiveBlending
+    });
+
+const ring =
+    new THREE.Mesh(
+        ringGeometry,
+        ringMaterial
+    );
+
+ring.rotation.x =
+    THREE.MathUtils.degToRad(67);
+
+ring.rotation.z =
+    THREE.MathUtils.degToRad(-15);
+
+planetGroup.add(ring);
+
+
+/* =====================================================
+   ANILLOS DE GLOW
+===================================================== */
+
+for(let i=0;i<3;i++){
+
+    const geo =
+        new THREE.TorusGeometry(
+            220,
+            14+i*9,
+            14,
+            180
+        );
+
+    const mat =
+        new THREE.MeshBasicMaterial({
+            color:
+                i===0
+                ?0xffff55
+                :0xffb000,
+            transparent:true,
+            opacity:
+                .18-i*.035,
+            blending:
+                THREE.AdditiveBlending,
+            depthWrite:false
+        });
+
+    const r =
+        new THREE.Mesh(
+            geo,
+            mat
+        );
+
+    r.rotation.copy(
+        ring.rotation
+    );
+
+    planetGroup.add(r);
+}
+
+
+/* =====================================================
+   NEBULOSAS / NUBES
+===================================================== */
+
+const clouds =
+    new THREE.Group();
+
+scene.add(clouds);
+
+for(let i=0;i<65;i++){
+
+    const cloud =
+        new THREE.Sprite(
+            new THREE.SpriteMaterial({
+                map:glowTex,
+                color:
+                    i%3===0
+                    ?0xffd83d
+                    :0xffb300,
+                transparent:true,
+                opacity:
+                    .07+
+                    Math.random()*.12,
+                blending:
+                    THREE.AdditiveBlending,
+                depthWrite:false
+            })
+        );
+
+    const angle =
+        Math.random()*Math.PI*2;
+
+    const radius =
+        350+
+        Math.random()*1450;
+
+    cloud.position.set(
+        Math.cos(angle)*radius,
+        (Math.random()-.5)*1000,
+        Math.sin(angle)*radius
+    );
+
+    const size =
+        250+
+        Math.random()*650;
+
+    cloud.scale.set(
+        size,
+        size*.55,
+        1
+    );
+
+    clouds.add(cloud);
+}
+
+
+/* =====================================================
+   ESTRELLAS
+===================================================== */
+
+const starCount=1200;
+
+const positions =
+    new Float32Array(
+        starCount*3
+    );
+
+for(let i=0;i<starCount;i++){
+
+    const n=i*3;
+
+    const r=
+        650+
+        Math.random()*2200;
+
+    const a=
+        Math.random()*Math.PI*2;
+
+    const b=
+        Math.acos(
+            2*Math.random()-1
+        );
+
+    positions[n]=
+        r*Math.sin(b)*Math.cos(a);
+
+    positions[n+1]=
+        r*Math.cos(b);
+
+    positions[n+2]=
+        r*Math.sin(b)*Math.sin(a);
+}
+
+const starGeo =
+    new THREE.BufferGeometry();
+
+starGeo.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+        positions,
+        3
+    )
+);
+
+const starMat =
+    new THREE.PointsMaterial({
+        color:0xffe99a,
+        size:2.5,
+        transparent:true,
+        opacity:.85,
+        blending:
+            THREE.AdditiveBlending
+    });
+
+const stars =
+    new THREE.Points(
+        starGeo,
+        starMat
+    );
+
+scene.add(stars);
+
+
+/* =====================================================
+   TEXTURA DE FLOR
+===================================================== */
+
+function flowerTexture(){
+
+    const c =
+        document.createElement("canvas");
+
+    c.width=256;
+    c.height=256;
+
+    const ctx=c.getContext("2d");
+
+    ctx.translate(128,128);
+
+    for(let i=0;i<14;i++){
+
+        ctx.save();
+
+        ctx.rotate(
+            i*Math.PI*2/14
+        );
+
+        const g=
+            ctx.createLinearGradient(
+                0,-100,
+                0,-10
+            );
+
+        g.addColorStop(
+            0,
+            "#fff96a"
+        );
+
+        g.addColorStop(
+            .45,
+            "#ffd000"
+        );
+
+        g.addColorStop(
+            1,
+            "#e89400"
+        );
+
+        ctx.fillStyle=g;
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+            0,-55,
+            20,
+            62,
+            0,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    const center=
+        ctx.createRadialGradient(
+            0,0,0,
+            0,0,38
+        );
+
+    center.addColorStop(
+        0,
+        "#ffe66a"
+    );
+
+    center.addColorStop(
+        .45,
+        "#a95e00"
+    );
+
+    center.addColorStop(
+        1,
+        "#321500"
+    );
+
+    ctx.fillStyle=center;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,0,38,
+        0,Math.PI*2
+    );
+
+    ctx.fill();
+
+    return new THREE.CanvasTexture(c);
+}
+
+const flowerTex=
+    flowerTexture();
+
+
+/* =====================================================
+   RAMOS DE FLORES
+===================================================== */
+
+const bouquetGroup =
+    new THREE.Group();
+
+scene.add(bouquetGroup);
+
+
+/* una flor */
+
+function createFlower(
+    x,
+    y,
+    z,
+    scale
+){
+
+    const mat =
+        new THREE.SpriteMaterial({
+            map:flowerTex,
+            transparent:true,
+            opacity:.95,
+            depthWrite:false
+        });
+
+    const f =
+        new THREE.Sprite(mat);
+
+    f.position.set(
+        x,y,z
+    );
+
+    f.scale.set(
+        scale,
+        scale,
+        1
+    );
+
+    return f;
+}
+
+
+/* ramos */
+
+for(let b=0;b<42;b++){
+
+    const bouquet =
+        new THREE.Group();
+
+    const angle =
+        Math.random()*Math.PI*2;
+
+    const radius =
+        300+
+        Math.random()*1000;
+
+    bouquet.position.set(
+        Math.cos(angle)*radius,
+        (Math.random()-.5)*750,
+        Math.sin(angle)*radius
+    );
+
+    const cantidad =
+        5+
+        Math.floor(Math.random()*7);
+
+    for(let f=0;f<cantidad;f++){
+
+        const flower =
+            createFlower(
+                (Math.random()-.5)*80,
+                (Math.random()-.5)*80,
+                (Math.random()-.5)*50,
+                35+
+                Math.random()*35
+            );
+
+        bouquet.add(flower);
+    }
+
+    bouquetGroup.add(
+        bouquet
+    );
+}
+
+
+/* =====================================================
+   MÁS FLORES SUELTAS
+===================================================== */
+
+for(let i=0;i<130;i++){
+
+    const angle =
+        Math.random()*Math.PI*2;
+
+    const radius =
+        300+
+        Math.random()*1250;
+
+    const flower =
+        createFlower(
+            Math.cos(angle)*radius,
+            (Math.random()-.5)*900,
+            Math.sin(angle)*radius,
+            25+
+            Math.random()*45
+        );
+
+    bouquetGroup.add(
+        flower
+    );
+}
+
+
+/* =====================================================
+   FRASES
+===================================================== */
+
+const frases=[
+
+"Feliz Día 🌻",
+"Flores Amarillas 💛",
+"Para ti 🌻",
+"Con mucho cariño 💛",
+"Que bonito es verte sonreír",
+"Hoy es un día especial 🌻",
+"Una flor para ti",
+"Que nunca falten las flores",
+"Que nunca falte la alegría",
+"Sonríe siempre 💛",
+"Te deseo un hermoso día",
+"Un pequeño detalle para ti",
+"Flores que alegran el corazón",
+"Que tengas un día maravilloso",
+"Mucho cariño para ti 🌻",
+"Un ramo lleno de amor",
+"Amarillo como el sol ☀️",
+"Que tu día brille",
+"Siempre hay una razón para sonreír",
+"Disfruta este momento",
+"Que seas muy feliz",
+"Un detalle hecho con cariño",
+"Flores para alegrarte",
+"Que todo te salga bonito",
+"Un poquito de felicidad 🌻",
+"Que nunca pierdas tu sonrisa",
+"Hoy las flores son para ti",
+"Brilla siempre ✨",
+"Que tengas un lindo día",
+"Muchos buenos deseos",
+"Un jardín para ti 🌻",
+"Que la felicidad te acompañe",
+"Sonríe, hoy es un día bonito",
+"Flores amarillas para alegrar el día",
+"Un abrazo lleno de cariño",
+"Que tus días sean brillantes",
+"Todo lo bonito para ti",
+"Que florezcan tus sueños 🌻",
+"Un detalle especial",
+"Que la alegría nunca termine",
+"Flores, luz y felicidad",
+"Que cada día sea especial",
+"Te mando muchas flores 🌻",
+"Un cielo lleno de flores",
+"Que siempre tengas motivos para sonreír",
+"Mucho amor y alegría",
+"Hoy todo brilla de amarillo",
+"Un ramo de buenos deseos",
+"Que tengas un hermoso momento",
+"Flores para una persona especial",
+"Que tu sonrisa ilumine todo",
+"Feliz día de las Flores Amarillas 💛"
+
+];
+
+
+/* =====================================================
+   TEXTURA DE TEXTO
+===================================================== */
+
+function textTexture(text){
+
+    const c =
+        document.createElement("canvas");
+
+    c.width=1200;
+    c.height=260;
+
+    const ctx=c.getContext("2d");
+
+    ctx.clearRect(
+        0,0,
+        c.width,
+        c.height
+    );
+
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+
+    ctx.font=
+        "bold 68px Arial";
+
+    ctx.shadowColor=
+        "#ffd000";
+
+    ctx.shadowBlur=30;
+
+    ctx.fillStyle=
+        "#fff3a0";
+
+    ctx.fillText(
+        text,
+        c.width/2,
+        c.height/2
+    );
+
+    return new THREE.CanvasTexture(c);
+}
+
+const textures =
+    frases.map(
+        textTexture
+    );
+
+
+/* =====================================================
+   TEXTOS FLOTANTES
+===================================================== */
+
+const textGroup =
+    new THREE.Group();
+
+scene.add(textGroup);
+
+const textObjects=[];
+
+for(let i=0;i<80;i++){
+
+    const material =
+        new THREE.SpriteMaterial({
+            map:
+                textures[
+                    i%textures.length
+                ],
+            transparent:true,
+            opacity:
+                .55+
+                Math.random()*.4,
+            depthWrite:false
+        });
+
+    const text =
+        new THREE.Sprite(material);
+
+    const angle =
+        Math.random()*Math.PI*2;
+
+    const radius =
+        330+
+        Math.random()*1350;
+
+    text.position.set(
+        Math.cos(angle)*radius,
+        (Math.random()-.5)*950,
+        Math.sin(angle)*radius
+    );
+
+    const sx =
+        170+
+        Math.random()*180;
+
+    const sy =
+        38+
+        Math.random()*35;
+
+    text.scale.set(
+        sx,
+        sy,
+        1
+    );
+
+    text.userData.baseY=
+        text.position.y;
+
+    text.userData.phase=
+        Math.random()*Math.PI*2;
+
+    textGroup.add(text);
+
+    textObjects.push(text);
+}
+
+
+/* =====================================================
+   TÍTULO
+===================================================== */
+
+const titleTexture =
+    textTexture(
+        "Feliz Día de las Flores Amarillas 🌻"
+    );
+
+const title =
+    new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map:titleTexture,
+            transparent:true,
+            opacity:1,
+            depthWrite:false
+        })
+    );
+
+title.position.set(
+    0,
+    370,
+    0
+);
+
+title.scale.set(
+    600,
+    130,
+    1
+);
+
+scene.add(title);
+
+
+/* =====================================================
+   ANIMACIÓN
+===================================================== */
+
+const clock=
+    new THREE.Clock();
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+    const t=
+        clock.getElapsedTime();
+
+    controls.update();
+
+
+    /* planeta y anillos */
+
+    ring.rotation.z+=.0025;
+
+    planetGroup.children
+        .forEach(
+            (obj,index)=>{
+
+                if(
+                    obj.isSprite &&
+                    index>0
+                ){
+                    obj.material.opacity=
+                        .24+
+                        Math.sin(
+                            t*1.5+
+                            index
+                        )*.06;
+                }
+
+            }
+        );
+
+
+    /* nubes */
+
+    clouds.rotation.y+=.00025;
+
+    clouds.children.forEach(
+        (cloud,i)=>{
+
+            cloud.material.opacity=
+                .07+
+                Math.sin(
+                    t*.25+i
+                )*.035;
+
+        }
+    );
+
+
+    /* estrellas */
+
+    stars.rotation.y+=.0001;
+
+
+    /* ramos */
+
+    bouquetGroup.rotation.y+=
+        .00012;
+
+    bouquetGroup.children.forEach(
+        (b,i)=>{
+
+            b.rotation.z=
+                Math.sin(
+                    t*.5+i
+                )*.04;
+
+        }
+    );
+
+
+    /* frases */
+
+    textObjects.forEach(
+        (text,i)=>{
+
+            text.position.y=
+                text.userData.baseY+
+                Math.sin(
+                    t*.45+
+                    text.userData.phase
+                )*8;
+
+        }
+    );
+
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+animate();
+
+
+/* =====================================================
+   INICIO
+===================================================== */
+
+const start=
+    document.getElementById(
+        "start"
+    );
+
+start.addEventListener(
+    "click",
+    ()=>{
+
+        start.style.opacity="0";
+
+        setTimeout(
+            ()=>{
+                start.style.display=
+                    "none";
+            },
+            800
+        );
+
+    }
+);
+
+
+/* =====================================================
+   RESIZE
+===================================================== */
+
+window.addEventListener(
+    "resize",
+    ()=>{
+
+        camera.aspect=
+            innerWidth/
+            innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            innerWidth,
+            innerHeight
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>
