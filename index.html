@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UN AÑO CONTIGO ❤️</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family:Arial,sans-serif;
+}
+
+/* INTRO */
+
+#intro{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    background:
+        radial-gradient(circle at center,#3a0030 0%,#090009 55%,#000 100%);
+    transition:opacity 1.2s ease;
+}
+
+#intro .heart{
+    font-size:90px;
+    animation:pulse 1.4s infinite;
+    filter:drop-shadow(0 0 25px #ff2a9d);
+}
+
+#intro h1{
+    margin:15px 20px 8px;
+    color:white;
+    font-size:clamp(28px,7vw,55px);
+    text-shadow:
+        0 0 10px #ff2a9d,
+        0 0 30px #ff2a9d;
+}
+
+#intro p{
+    color:#fff;
+    font-size:18px;
+    opacity:.85;
+}
+
+@keyframes pulse{
+    0%,100%{
+        transform:scale(1);
+    }
+    50%{
+        transform:scale(1.15);
+    }
+}
+
+/* CARTA */
+
+#letterButton{
+    position:fixed;
+    right:22px;
+    bottom:22px;
+    width:85px;
+    height:85px;
+    border-radius:50%;
+    z-index:50;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,40,150,.16);
+    border:2px solid rgba(255,100,190,.5);
+    box-shadow:
+        0 0 15px #ff2a9d,
+        0 0 40px rgba(255,42,157,.5);
+    font-size:43px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+#letterButton:hover{
+    transform:scale(1.1);
+}
+
+#letterModal{
+    position:fixed;
+    inset:0;
+    z-index:200;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:rgba(0,0,0,.78);
+    backdrop-filter:blur(8px);
+}
+
+.letter{
+    width:min(520px,94vw);
+    max-height:80vh;
+    overflow-y:auto;
+    padding:30px;
+    border-radius:25px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(45,0,35,.96),
+            rgba(10,0,15,.98)
+        );
+    border:1px solid rgba(255,80,180,.45);
+    box-shadow:
+        0 0 30px rgba(255,42,157,.45),
+        inset 0 0 30px rgba(255,42,157,.08);
+    color:white;
+}
+
+.letter h2{
+    text-align:center;
+    color:#ff75c4;
+    text-shadow:0 0 12px #ff2a9d;
+    margin-top:0;
+}
+
+.letter p{
+    line-height:1.7;
+    font-size:16px;
+    color:#f8eaf3;
+}
+
+.close{
+    display:block;
+    margin-top:22px;
+    text-align:center;
+    color:#ff75c4;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* CANVAS */
+
+canvas{
+    display:block;
+}
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+
+<div id="intro" onclick="iniciarExperiencia()">
+
+    <div class="heart">❤️</div>
+
+    <h1>UN AÑO CONTIGO MAYTE</h1>
+
+    <p>presiona para iniciar ✨</p>
+
+</div>
+
+
+<!-- BOTÓN CARTA -->
+
+<div id="letterButton" onclick="abrirCarta()">
+    💌
+</div>
+
+
+<!-- CARTA -->
+
+<div id="letterModal" onclick="cerrarCarta(event)">
+
+    <div class="letter" onclick="event.stopPropagation()">
+
+        <h2>UN AÑO CONTIGO MAYTE ❤️</h2>
+
+        <p>
+        Feliz primer añito mi amor, hoy quiero decirte que eres lo mejor
+        que me ha pasado en esta vida y sé que si hubiera otra vida te
+        buscaría hasta encontrarte.
+        </p>
+
+        <p>
+        Todo este tiempo ha sido muy especial para mí. Cada recuerdo
+        contigo tiene algo bonito, algo que me hace sonreír sin darme
+        cuenta y me llena el corazón de felicidad.
+        </p>
+
+        <p>
+        Hoy cumplimos un año y desde que empezó cambió mi vida por
+        completo. Me doy cuenta que quiero seguir viviendo mil locuras
+        a tu lado.
+        </p>
+
+        <p>
+        Créeme, a pesar de todo, las peleas y todo lo que vivimos,
+        eso no quita el gran amor que te tengo. Tenerte en mi vida es
+        una de las mejores cosas que me ha pasado.
+        </p>
+
+        <p>
+        Gracias por estar siempre para mí, por cuidarme y apoyarme,
+        por siempre hacerme sentir importante a tu manera genuina.
+        </p>
+
+        <p>
+        Te amo, te quiero y te adoro infinitamente,
+        amor de mi vida. ❤️
+        </p>
+
+        <span class="close" onclick="cerrarCarta()">
+            Cerrar ❤️
+        </span>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function iniciarExperiencia(){
+
+    const intro=document.getElementById("intro");
+
+    if(!intro)return;
+
+    intro.style.opacity="0";
+    intro.style.pointerEvents="none";
+
+    setTimeout(function(){
+
+        intro.style.display="none";
+
+    },1200);
+
+}
+
+
+function abrirCarta(){
+
+    document.getElementById("letterModal").style.display="flex";
+
+}
+
+
+function cerrarCarta(event){
+
+    if(
+        event &&
+        event.target !== document.getElementById("letterModal")
+    ){
+        return;
+    }
+
+    document.getElementById("letterModal").style.display="none";
+
+}
+
+</script>
+
+
+<script type="importmap">
+{
+    "imports":{
+        "three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
+</script>
+
+
+<script type="module">
+
+import * as THREE from "three";
+
+import {
+    OrbitControls
+} from "three/addons/controls/OrbitControls.js";
+
+
+/* ESCENA */
+
+const scene=new THREE.Scene();
+
+
+/* CÁMARA */
+
+const camera=
+    new THREE.PerspectiveCamera(
+        65,
+        innerWidth/innerHeight,
+        .1,
+        3000
+    );
+
+camera.position.set(
+    0,
+    20,
+    180
+);
+
+
+/* RENDER */
+
+const renderer=
+    new THREE.WebGLRenderer({
+        antialias:true,
+        alpha:false
+    });
+
+renderer.setPixelRatio(
+    Math.min(devicePixelRatio,2)
+);
+
+renderer.setSize(
+    innerWidth,
+    innerHeight
+);
+
+renderer.setClearColor(
+    0x000000,
+    1
+);
+
+document.body.appendChild(
+    renderer.domElement
+);
+
+
+/* CONTROLES */
+
+const controls=
+    new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+controls.enableDamping=true;
+controls.dampingFactor=.04;
+
+controls.enablePan=false;
+
+controls.minDistance=70;
+controls.maxDistance=350;
+
+
+/* ESTRELLAS */
+
+const starCount=2000;
+
+const starPositions=
+    new Float32Array(
+        starCount*3
+    );
+
+for(
+    let i=0;
+    i<starCount;
+    i++
+){
+
+    const r=
+        100+
+        Math.random()*200;
+
+    const theta=
+        Math.random()*Math.PI*2;
+
+    const phi=
+        Math.acos(
+            2*Math.random()-1
+        );
+
+    starPositions[i*3]=
+        r*Math.sin(phi)*Math.cos(theta);
+
+    starPositions[i*3+1]=
+        r*Math.cos(phi);
+
+    starPositions[i*3+2]=
+        r*Math.sin(phi)*Math.sin(theta);
+
+}
+
+
+const starGeometry=
+    new THREE.BufferGeometry();
+
+starGeometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+        starPositions,
+        3
+    )
+);
+
+
+const starMaterial=
+    new THREE.PointsMaterial({
+        color:0xffffff,
+        size:1.25,
+        transparent:true,
+        opacity:.85,
+        sizeAttenuation:true
+    });
+
+
+const stars=
+    new THREE.Points(
+        starGeometry,
+        starMaterial
+    );
+
+scene.add(stars);
+
+
+/* CORAZÓN */
+
+const heartCount=8500;
+
+const heartPositions=
+    new Float32Array(
+        heartCount*3
+    );
+
+const scale=.78;
+
+for(
+    let i=0;
+    i<heartCount;
+    i++
+){
+
+    const t=
+        Math.random()*
+        Math.PI*2;
+
+    const x=
+        16*Math.pow(
+            Math.sin(t),
+            3
+        );
+
+    const y=
+        13*Math.cos(t)
+        -5*Math.cos(2*t)
+        -2*Math.cos(3*t)
+        -Math.cos(4*t);
+
+    const z=
+        (Math.random()-.5)*
+        8*
+        scale;
+
+    const spread=
+        Math.random()*
+        .8+
+        .15;
+
+    heartPositions[i*3]=
+        x*scale+
+        (Math.random()-.5)*spread;
+
+    heartPositions[i*3+1]=
+        y*scale+
+        (Math.random()-.5)*spread;
+
+    heartPositions[i*3+2]=
+        z;
+}
+
+
+const heartGeometry=
+    new THREE.BufferGeometry();
+
+heartGeometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+        heartPositions,
+        3
+    )
+);
+
+
+const heartMaterial=
+    new THREE.PointsMaterial({
+        color:0xff2a9d,
+        size:1.5,
+        transparent:true,
+        opacity:.95,
+        blending:THREE.AdditiveBlending,
+        depthWrite:false
+    });
+
+
+const heart=
+    new THREE.Points(
+        heartGeometry,
+        heartMaterial
+    );
+
+heart.position.y=3;
+
+scene.add(heart);
+
+
+/* ANILLOS */
+
+for(
+    let i=0;
+    i<4;
+    i++
+){
+
+    const ringGeometry=
+        new THREE.TorusGeometry(
+            62+i*7,
+            .35,
+            8,
+            160
+        );
+
+    const ringMaterial=
+        new THREE.MeshBasicMaterial({
+            color:0xff2a9d,
+            transparent:true,
+            opacity:.18+
+                i*.06,
+            blending:
+                THREE.AdditiveBlending
+        });
+
+    const ring=
+        new THREE.Mesh(
+            ringGeometry,
+            ringMaterial
+        );
+
+    ring.rotation.x=
+        Math.PI/2+
+        i*.22;
+
+    ring.rotation.z=
+        i*.35;
+
+    ring.userData={
+        speed:
+            .0008+
+            i*.00025
+    };
+
+    scene.add(ring);
+
+}
+
+
+/* GLOW */
+
+const glowCanvas=
+    document.createElement("canvas");
+
+glowCanvas.width=256;
+glowCanvas.height=256;
+
+const glowContext=
+    glowCanvas.getContext("2d");
+
+const gradient=
+    glowContext.createRadialGradient(
+        128,
+        128,
+        0,
+        128,
+        128,
+        128
+    );
+
+gradient.addColorStop(
+    0,
+    "rgba(255,80,190,.75)"
+);
+
+gradient.addColorStop(
+    .3,
+    "rgba(255,30,150,.35)"
+);
+
+gradient.addColorStop(
+    1,
+    "rgba(255,0,120,0)"
+);
+
+glowContext.fillStyle=gradient;
+
+glowContext.fillRect(
+    0,
+    0,
+    256,
+    256
+);
+
+
+const glowTexture=
+    new THREE.CanvasTexture(
+        glowCanvas
+    );
+
+const glowMaterial=
+    new THREE.SpriteMaterial({
+        map:glowTexture,
+        transparent:true,
+        blending:
+            THREE.AdditiveBlending,
+        depthWrite:false
+    });
+
+const glow=
+    new THREE.Sprite(
+        glowMaterial
+    );
+
+glow.scale.set(
+    110,
+    110,
+    1
+);
+
+glow.position.set(
+    0,
+    3,
+    -5
+);
+
+scene.add(glow);
+
+
+/* TEXTO */
+
+function makeText(text){
+
+    const canvas=
+        document.createElement("canvas");
+
+    canvas.width=1024;
+    canvas.height=128;
+
+    const ctx=
+        canvas.getContext("2d");
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.font=
+        "bold 34px Arial";
+
+    ctx.textAlign=
+        "center";
+
+    ctx.textBaseline=
+        "middle";
+
+    ctx.shadowColor=
+        "#ff2a9d";
+
+    ctx.shadowBlur=14;
+
+    ctx.fillStyle=
+        "#ffffff";
+
+    ctx.fillText(
+        text,
+        512,
+        64
+    );
+
+    const texture=
+        new THREE.CanvasTexture(
+            canvas
+        );
+
+    texture.needsUpdate=true;
+
+    const material=
+        new THREE.SpriteMaterial({
+            map:texture,
+            transparent:true,
+            depthWrite:false
+        });
+
+    const sprite=
+        new THREE.Sprite(
+            material
+        );
+
+    sprite.scale.set(
+        75,
+        9.5,
+        1
+    );
+
+    return sprite;
+}
+
+
+/* FRASES */
+
+const phrases=[
+
+    "UN AÑO CONTIGO ❤️",
+    "365 DÍAS A TU LADO 💕",
+    "TE AMO ❤️",
+    "TE QUIERO MUCHÍSIMO 💗",
+    "MI NIÑA HERMOSA 🌷",
+    "MI AMOR 💕",
+    "MI VIDA ❤️",
+    "MI CIELO ✨",
+    "MI PERSONA FAVORITA 💞",
+    "MI LUGAR FAVORITO ERES TÚ 🌎",
+    "SIEMPRE TÚ ❤️",
+    "SIEMPRE NOSOTROS 💕",
+
+    "GRACIAS POR ESTAR ❤️",
+    "GRACIAS POR TODO 💗",
+    "GRACIAS POR ELEGIRME 💕",
+    "GRACIAS POR CUIDARME 🌷",
+    "GRACIAS POR APOYARME ❤️",
+
+    "CONTIGO TODO ES BONITO ✨",
+    "CONTIGO SOY FELIZ 💕",
+    "CONTIGO TODO CAMBIA ❤️",
+    "CONTIGO QUIERO TODO 💗",
+    "CONTIGO SIEMPRE 🌎",
+
+    "ERES MI FELICIDAD ❤️",
+    "ERES MI PAZ 💕",
+    "ERES MI PERSONA FAVORITA 💗",
+    "ERES MUY ESPECIAL 🌷",
+    "ERES LO MEJOR ❤️",
+
+    "ME ENCANTA ESTAR CONTIGO 💕",
+    "ME ENCANTA TU SONRISA ❤️",
+    "ME ENCANTA TU FORMA DE SER 💗",
+    "ME ENCANTA CADA MOMENTO CONTIGO ✨",
+
+    "TE ELEGIRÍA MIL VECES ❤️",
+    "TE ELEGIRÍA EN CADA VIDA 💕",
+    "SIEMPRE TE ELEGIRÍA 💗",
+
+    "UN AÑO DE RECUERDOS ❤️",
+    "UN AÑO DE LOCURAS 💕",
+    "UN AÑO DE SONRISAS 💗",
+    "UN AÑO JUNTOS 🌷",
+
+    "POR MUCHOS AÑOS MÁS ❤️",
+    "POR MUCHOS MOMENTOS MÁS 💕",
+    "POR MUCHAS LOCURAS MÁS 💗",
+
+    "QUIERO SEGUIR CONTIGO ❤️",
+    "QUIERO MIL AVENTURAS CONTIGO 💕",
+    "QUIERO VERTE SONREÍR 💗",
+    "QUIERO HACERTE FELIZ 🌷",
+
+    "NUESTRO AMOR ❤️",
+    "NUESTROS RECUERDOS 💕",
+    "NUESTRA HISTORIA 💗",
+    "NUESTRO AÑO ✨",
+
+    "QUÉ BONITO ENCONTRARTE ❤️",
+    "QUÉ BONITO AMARTE 💕",
+    "QUÉ BONITO TENERTE 💗",
+
+    "CADA DÍA TE AMO MÁS ❤️",
+    "CADA MOMENTO CONTIGO 💕",
+    "CADA RECUERDO 💗",
+
+    "💕 MAYTE ❤️",
+    "❤️ MAYTE 💗",
+    "MI MAYTE 🌷",
+    "MI NIÑA 💕",
+    "MI AMOR ❤️",
+    "MI TODO 💗",
+    "PARA SIEMPRE ❤️",
+    "JUNTOS SIEMPRE 💞",
+    "TE AMO ❤️",
+    "TE QUIERO 💕",
+    "NOSOTROS ✨",
+    "UN AÑO ❤️",
+    "365 DÍAS 💗",
+    "POR MUCHOS MÁS 💕"
+
+];
+
+
+phrases.forEach(
+    (text,i)=>{
+
+        const sprite=
+            makeText(text);
+
+        const angle=
+            Math.random()*
+            Math.PI*2;
+
+        const radius=
+            75+
+            Math.random()*75;
+
+        sprite.position.set(
+            Math.cos(angle)*radius,
+            -20+
+                Math.random()*80,
+            Math.sin(angle)*radius
+        );
+
+        sprite.userData={
+            angle:angle,
+            radius:radius,
+            y:sprite.position.y,
+            speed:
+                .0005+
+                Math.random()*.001
+        };
+
+        scene.add(sprite);
+
+    }
+);
+
+
+/* EMOJIS */
+
+function makeEmoji(char){
+
+    const canvas=
+        document.createElement("canvas");
+
+    canvas.width=128;
+    canvas.height=128;
+
+    const ctx=
+        canvas.getContext("2d");
+
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.font="70px Arial";
+
+    ctx.fillText(
+        char,
+        64,
+        68
+    );
+
+    const texture=
+        new THREE.CanvasTexture(
+            canvas
+        );
+
+    const material=
+        new THREE.SpriteMaterial({
+            map:texture,
+            transparent:true,
+            depthWrite:false
+        });
+
+    const sprite=
+        new THREE.Sprite(
+            material
+        );
+
+    sprite.scale.set(
+        18,
+        18,
+        1
+    );
+
+    return sprite;
+}
+
+
+const emojis=[
+
+    ["🕷️",85,30,-15],
+    ["🐱",70,-25,35],
+    ["🌹",-75,30,20],
+    ["💗",-80,-25,-20]
+
+];
+
+
+emojis.forEach(
+    ([char,x,y,z])=>{
+
+        const sprite=
+            makeEmoji(char);
+
+        sprite.position.set(
+            x,
+            y,
+            z
+        );
+
+        scene.add(sprite);
+
+    }
+);
+
+
+/* ANIMACIÓN */
+
+let time=0;
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+    time+=.01;
+
+    stars.rotation.y+=.00015;
+
+    heart.rotation.y=
+        Math.sin(time*.25)*.15;
+
+    heart.rotation.z=
+        Math.sin(time*.2)*.04;
+
+
+    glow.scale.set(
+        105+
+            Math.sin(time*1.5)*8,
+        105+
+            Math.sin(time*1.5)*8,
+        1
+    );
+
+
+    scene.children.forEach(
+        obj=>{
+
+            if(
+                obj.userData &&
+                obj.userData.speed
+            ){
+
+                obj.userData.angle+=
+                    obj.userData.speed;
+
+                if(obj.isMesh){
+
+                    obj.rotation.y+=
+                        obj.userData.speed*3;
+
+                    obj.rotation.z+=
+                        obj.userData.speed;
+
+                }
+
+                else if(obj.isSprite){
+
+                    obj.position.x=
+                        Math.cos(
+                            obj.userData.angle
+                        )*
+                        obj.userData.radius;
+
+                    obj.position.z=
+                        Math.sin(
+                            obj.userData.angle
+                        )*
+                        obj.userData.radius;
+
+                    obj.position.y=
+                        obj.userData.y+
+                        Math.sin(
+                            time+
+                            obj.userData.angle
+                        )*3;
+
+                }
+
+            }
+
+        }
+    );
+
+
+    controls.update();
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+
+animate();
+
+
+/* REDIMENSIONAR */
+
+addEventListener(
+    "resize",
+    ()=>{
+
+        camera.aspect=
+            innerWidth/
+            innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            innerWidth,
+            innerHeight
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>
